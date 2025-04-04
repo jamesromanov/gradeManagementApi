@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(err);
 
-app.use("auth", authRouter);
+app.use("/auth", authRouter);
 
 process.on("unhandledRejection", (err) => {
   console.log(err.name, err.message);

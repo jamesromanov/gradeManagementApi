@@ -28,7 +28,11 @@ const register = errorHandler(async (req, res, next) => {
     role,
     active,
   });
-  response(res, user);
+  let hide = user.toObject();
+  delete hide.role;
+  delete hide.password;
+  delete hide.active;
+  response(res, hide);
 });
 const login = errorHandler(async (req, res, next) => {
   let { email, password } = req.body;
@@ -42,19 +46,19 @@ const login = errorHandler(async (req, res, next) => {
   let token = jwt.sign(
     { id: userChecking.id, role: userChecking.role },
     process.env.JWT_REFRESH_TOKEN_KEY,
-    { expiresIn: process.env.JWT_ACCESS_TOKEN_KEY }
+    { expiresIn: process.env.JWT_ACCESS_EXP_DATE }
   );
 
   let options = {
-    maxAge: process.env.JWT_ACCESS_TOKEN_KEY,
+    maxAge: eval(process.env.COOKIE_EXP_TIME),
     httpOnly: false,
   };
   res.cookie("jwt", token, options);
 
   let obj = userChecking.toObject();
-  delete password;
-  delete role;
-  response(res, obj + "Successfully logged in!");
+  delete obj.password;
+  delete obj.role;
+  response(res, { status: "Successfully logged in!", token: token });
 });
 
 let logout = errorHandler(async (req, res, next) => {
@@ -68,7 +72,7 @@ let logout = errorHandler(async (req, res, next) => {
   userChecking.password = password;
 
   let options = {
-    maxAge: process.env.JWT_ACCESS_TOKEN_KEY,
+    maxAge: eval(process.env.COOKIE_EXP_TIME),
     httpOnly: false,
   };
   res.clearCookie("jwt", options);

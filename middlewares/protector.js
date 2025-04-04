@@ -5,10 +5,10 @@ require("dotenv").config();
 
 const protect = async function (req, res, next) {
   try {
-    let tokenComing = req.headers.authorizarion;
+    let tokenComing = req.headers.authorization;
     if (!tokenComing || !tokenComing.startsWith("Bearer"))
       throw new Error("Token is invalid!");
-    let actualToken = req.headers.authorizarion.split(" ")[1];
+    let actualToken = req.headers.authorization.split(" ")[1];
     let checkignToken = jwt.verify(
       actualToken,
       process.env.JWT_ACCESS_TOKEN_KEY
