@@ -22,7 +22,10 @@ const getGrades = errorHandler(async (req, res, next) => {
 });
 const stuGrades = errorHandler(async (req, res, next) => {
   let student = req.user.id;
-  let Student = await gradesModel.find({ student });
+  let Student = await gradesModel
+    .find({ student })
+    .populate("subject student")
+    .select({ teacher: 0 });
 
   if (!Student) throw new Error("Not found!");
   response(res, Student);
