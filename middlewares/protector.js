@@ -9,6 +9,9 @@ const protect = async function (req, res, next) {
     if (!tokenComing || !tokenComing.startsWith("Bearer"))
       throw new Error("Token is invalid!");
     let actualToken = req.headers.authorization.split(" ")[1];
+    if (!req.cookies.jwt || req.cookies.jwt !== actualToken)
+      throw new Error("Token is invalid or something went wrong!");
+
     let checkignToken = jwt.verify(
       actualToken,
       process.env.JWT_ACCESS_TOKEN_KEY

@@ -75,8 +75,9 @@ let logout = errorHandler(async (req, res, next) => {
     maxAge: eval(process.env.COOKIE_EXP_TIME),
     httpOnly: false,
   };
+  if (!req.cookies.jwt) throw new Error("You havent logged in!");
   res.clearCookie("jwt", options);
-  response(res, "You successfully logget out!");
+  response(res, "You successfully logged out!");
 });
 
 module.exports = { login, register, logout };
